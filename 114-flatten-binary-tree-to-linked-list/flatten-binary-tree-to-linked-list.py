@@ -5,20 +5,22 @@
 #         self.left = left
 #         self.right = right
 class Solution:
-    def reverse_preorder(self, node):
-        if not node:
-            return 
-        self.reverse_preorder(node.right)
-        self.reverse_preorder(node.left)
-
-        node.right = self.previous
-        node.left = None
-
-        self.previous = node
-
     def flatten(self, root: TreeNode | None) -> None:
         """
         Do not return anything, modify root in-place instead.
         """
-        self.previous = None
-        self.reverse_preorder(root)
+        if not root:
+            return 
+        st = [root]
+
+        while st:
+            curr = st.pop()
+            
+            if curr.right:
+                st.append(curr.right)
+            if curr.left:
+                st.append(curr.left)
+            
+            if st:
+                curr.right = st[-1]
+            curr.left = None
