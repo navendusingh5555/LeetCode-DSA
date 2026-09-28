@@ -9,18 +9,16 @@ class Solution:
         """
         Do not return anything, modify root in-place instead.
         """
-        if not root:
-            return 
-        st = [root]
-
-        while st:
-            curr = st.pop()
-            
-            if curr.right:
-                st.append(curr.right)
+        curr = root
+        
+        while curr:
             if curr.left:
-                st.append(curr.left)
-            
-            if st:
-                curr.right = st[-1]
-            curr.left = None
+                prev = curr.left
+
+                while prev.right:
+                    prev = prev.right
+                
+                prev.right = curr.right
+                curr.right = curr.left
+                curr.left = None
+            curr = curr.right
