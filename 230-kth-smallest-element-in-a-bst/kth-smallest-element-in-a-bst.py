@@ -5,16 +5,19 @@
 #         self.left = left
 #         self.right = right
 class Solution:
-    def inorderTraversal(self, root, inorder):
+    def kthSmallest(self, root: TreeNode | None, k: int) -> int:
+        cnt = 0
+        ans = None
         def traverse(node):
-            if not node:
-                return 
+            nonlocal cnt, ans
+            if not node or ans is not None:
+                return
             traverse(node.left)
-            inorder.append(node.val)
+
+            cnt += 1
+            if cnt == k:
+                ans = node.val
+                return
             traverse(node.right)
         traverse(root)
-        return inorder
-    def kthSmallest(self, root: TreeNode | None, k: int) -> int:
-        inorder = []
-        self.inorderTraversal(root, inorder)
-        return inorder[k - 1]
+        return ans
