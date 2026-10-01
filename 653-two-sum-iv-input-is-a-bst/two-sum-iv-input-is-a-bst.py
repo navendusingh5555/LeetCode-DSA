@@ -4,26 +4,50 @@
 #         self.val = val
 #         self.left = left
 #         self.right = right
+class BSTIterator:
+    def __init__(self, root):
+        self.stack1 = []
+        self.stack2 = []
+        self._pushAllLeft(root)
+        self._pushAllRight(root)
+    
+    def _pushAllLeft(self, root):
+        while root:
+            self.stack1.append(root)
+            root = root.left
+    
+    def _pushAllRight(self, root):
+        while root:
+            self.stack2.append(root)
+            root = root.right
+    
+    def next(self):
+        node = self.stack1.pop()
+        if node.right:
+            self._pushAllLeft(node.right)
+        return node.val
+    
+    def before(self):
+        node = self.stack2.pop()
+        if node.left:
+            self._pushAllRight(node.left)
+        return node.val
+
+
 class Solution:
-    def inorder(self, root, nums):
-        if not root:
-            return
-        self.inorder(root.left, nums)
-        nums.append(root.val)
-        self.inorder(root.right, nums)
-        
     def findTarget(self, root: Optional[TreeNode], k: int) -> bool:
-        nums = []
-        self.inorder(root, nums)
+        if not root:
+            return False
+        
+        iter = BSTIterator(root)
+        i = iter.next()
+        j = iter.before()
 
-        left = 0
-        right = len(nums) - 1
-
-        while left < right:
-            if nums[left] + nums[right] == k:
+        while i < j:
+            if i + j == k:
                 return True
-            elif nums[left] + nums[right] < k:
-                left += 1
+            elif i + j < k:
+                i = iter.next()
             else:
-                right -= 1
+                j = iter.before()
         return False
