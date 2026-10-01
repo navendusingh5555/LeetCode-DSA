@@ -5,17 +5,32 @@
 #         self.left = left
 #         self.right = right
 class Solution:
-    def insert_node(self, root, value):
-        if root is None:
-            return TreeNode(value)
-        if root.val > value:
-            root.left = self.insert_node(root.left, value)
-        elif root.val < value:
-            root.right = self.insert_node(root.right, value)
-        return root
-
     def bstFromPreorder(self, preorder: list[int]) -> TreeNode | None:
-        root: Optional[TreeNode] = None
-        for value in preorder:
-            root = self.insert_node(root, value)
+        inorder = self.print_inorder(preorder)
+        return self.buildTree(preorder, inorder)
+        
+    def buildTree(self, preorder, inorder):
+        if not preorder or not inorder:
+            return None
+        root = TreeNode(preorder[0])
+        stack = [root]
+        inorder_ptr = 0
+
+        for i in range(1, len(preorder)):
+            val = preorder[i]
+            node = stack[-1]
+
+            if node.val != inorder[inorder_ptr]:
+                node.left = TreeNode(val)
+                stack.append(node.left)
+            else:
+                while stack and stack[-1].val == inorder[inorder_ptr]:
+                    node = stack.pop()
+                    inorder_ptr += 1
+                node.right = TreeNode(val)
+                stack.append(node.right)
         return root
+    
+    def print_inorder(self, preorder):
+        inorder = sorted(preorder)
+        return inorder
