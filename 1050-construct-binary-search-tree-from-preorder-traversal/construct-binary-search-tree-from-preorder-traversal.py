@@ -5,32 +5,24 @@
 #         self.left = left
 #         self.right = right
 class Solution:
-    def bstFromPreorder(self, preorder: list[int]) -> TreeNode | None:
-        inorder = self.print_inorder(preorder)
-        return self.buildTree(preorder, inorder)
-        
-    def buildTree(self, preorder, inorder):
-        if not preorder or not inorder:
+    def build(self, preorder, limit):
+        if not preorder:
             return None
-        root = TreeNode(preorder[0])
-        stack = [root]
-        inorder_ptr = 0
+        if self.index >= len(preorder):
+            return None
+        value:int = preorder[self.index]
 
-        for i in range(1, len(preorder)):
-            val = preorder[i]
-            node = stack[-1]
+        if not limit[0] <= value <= limit[1]:
+            return None
+        
+        root = TreeNode(value)
+        self.index += 1
 
-            if node.val != inorder[inorder_ptr]:
-                node.left = TreeNode(val)
-                stack.append(node.left)
-            else:
-                while stack and stack[-1].val == inorder[inorder_ptr]:
-                    node = stack.pop()
-                    inorder_ptr += 1
-                node.right = TreeNode(val)
-                stack.append(node.right)
+        root.left = self.build(preorder, [limit[0], value])
+        root.right = self.build(preorder, [value, limit[1]])
+
         return root
-    
-    def print_inorder(self, preorder):
-        inorder = sorted(preorder)
-        return inorder
+
+    def bstFromPreorder(self, preorder: list[int]) -> TreeNode | None:
+        self.index:int = 0
+        return self.build(preorder, [float("-inf"), float("inf")])
