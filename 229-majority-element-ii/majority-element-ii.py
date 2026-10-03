@@ -1,15 +1,25 @@
 class Solution:
     def majorityElement(self, nums: list[int]) -> list[int]:
-        n = len(nums)
-        h_map = {}
-        result = []
+        cand1, cand2 = None, None
+        cnt1, cnt2 = 0, 0
 
         for num in nums:
-            h_map[num] = h_map.get(num, 0) + 1
+            if num == cand1:
+                cnt1 += 1
+            elif num == cand2:
+                cnt2 += 1
+            elif cnt1 == 0:
+                cand1, cnt1 = num, 1
+            elif cnt2 == 0:
+                cand2, cnt2 = num, 1
+            else:
+                cnt1 -= 1
+                cnt2 -= 1
         
-        for key, value in h_map.items():
-            if value > n//3:
-                result.append(key)
-            if len(result) == 2:
-                break
+        result = []
+        n = len(nums)
+        for cand in (cand1, cand2):
+            if cand is not None and nums.count(cand) > n//3:
+                result.append(cand)
+
         return result
