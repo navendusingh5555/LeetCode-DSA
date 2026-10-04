@@ -6,7 +6,7 @@ class Solution:
 
         for char in s:
             if char == "(":
-                st.append("(")
+                st.append(char)
                 curr_depth += 1
                 max_depth = max(max_depth, curr_depth)
             elif char == ")":
